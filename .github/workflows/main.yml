@@ -80,9 +80,8 @@ jobs:
       - name: Show workflow information
         id: get_filename
         run: |
-          export _NAME=$GOOS-$GOARCH$GOARM
-          echo "GOOS: $GOOS, GOARCH: $GOARCH, GOARM: $GOARM, RELEASE_NAME: $_NAME"
-          echo "::set-output name=ASSET_NAME::$_NAME"
+          _NAME="$GOOS-$GOARCH${GOARM:-}"
+          echo "GOOS: $GOOS, GOARCH: $GOARCH, GOARM: ${GOARM:-}, RELEASE_NAME: $_NAME"
           echo "ASSET_NAME=$_NAME" >> $GITHUB_ENV
       - name: Set up Go
         uses: actions/setup-go@v3
@@ -104,7 +103,7 @@ jobs:
       - name: Create ZIP archive
         run: |
           pushd build_assets || exit 1
-          zip -9vr ../EasierConnect-$ASSET_NAME.zip .
+          zip -9vr ../EasierConnect-${{ env.ASSET_NAME }}.zip .
           popd || exit 1
       
       - name: Upload release binary
@@ -112,5 +111,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          gh release upload ${{ github.event.release.tag_name }} EasierConnect-${{ steps.get_filename.outputs.ASSET_NAME }}.zip
+          gh release upload ${{ github.event.release.tag_name }} EasierConnect-${{ env.ASSET_NAME }}.zip
 
