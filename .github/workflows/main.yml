@@ -81,8 +81,8 @@ jobs:
         id: get_filename
         run: |
           _NAME="$GOOS-$GOARCH${GOARM:-}"
-          echo "GOOS: $GOOS, GOARCH: $GOARCH, GOARM: ${GOARM:-}, RELEASE_NAME: $_NAME"
-          echo "ASSET_NAME=$_NAME" >> $GITHUB_ENV
+          echo "name=ASSET_NAME::$_NAME" >> $GITHUB_OUTPUT  # 新版语法
+          echo "ASSET_NAME=$_NAME" >> $GITHUB_ENV  # 可选：同时设置环境变量
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
